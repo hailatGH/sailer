@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=securePassword
     ports:
       - "5432:5432"
-volumes:
+    volumes:
       - postgres_db_data:/var/lib/postgresql/data
 
 volumes:
