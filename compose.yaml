@@ -5,7 +5,9 @@ services:
     image: postgres:15
     container_name: poostgres_db
     environment:
-      - POSTGRES_PASSWORD=securePassword
+      - POSTGRES_DB=docpgsailer
+      - POSTGRES_USER=docpgsailer
+      - POSTGRES_PASSWORD=docpgsailer
     ports:
       - "5432:5432"
     volumes:
@@ -16,17 +18,15 @@ services:
     command: server --console-address ":9001" /data
     container_name: s3
     environment:
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ACCESS_KEY=docpgsailer
+      - MINIO_SECRET_KEY=docpgsailer
+      - MINIO_ROOT_USER=docpgsailer
+      - MINIO_ROOT_PASSWORD=docpgsailer
     ports:
       - "9000:9000"
       - "9001:9001"
     volumes:
       - s3_data:/data
-
-
 
 volumes:
   postgres_db_data:
