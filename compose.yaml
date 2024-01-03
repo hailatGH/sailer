@@ -11,5 +11,23 @@ services:
     volumes:
       - postgres_db_data:/var/lib/postgresql/data
 
+  s3:
+    image: minio/minio:latest
+    command: server --console-address ":9001" /data
+    container_name: s3
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - s3_data:/data
+
+
+
 volumes:
   postgres_db_data:
+  s3_data:
