@@ -3,7 +3,7 @@ name: docpgsailer
 services:
   postgres_db:
     image: postgres:15
-    container_name: poostgres_db
+    container_name: postgres_db
     environment:
       - POSTGRES_DB=docpgsailer
       - POSTGRES_USER=docpgsailer
@@ -12,6 +12,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docpgsailer -d docpgsailer"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   s3:
     image: minio/minio:latest
@@ -27,6 +32,11 @@ services:
       - "9001:9001"
     volumes:
       - s3_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_db_data:
