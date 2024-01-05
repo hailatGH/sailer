@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.13-slim-bullseye
 
 ENV PIPX_BIN_DIR=/root/.local/bin
 ENV PATH=${PIPX_BIN_DIR}:${PATH}

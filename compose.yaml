@@ -38,6 +38,17 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    volumes:
+      - ./:/app
+      - ./logs:/app/logs
+
+
+    
 volumes:
   postgres_db_data:
   s3_data:
