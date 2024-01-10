@@ -12,10 +12,20 @@ DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 DB_HOST = os.getenv("POSTGRES_HOST")
 DB_PORT = os.getenv("POSTGRES_PORT")
 CRON_EXP = os.getenv("BACKUP_SCHEDULE", "0 0 * * *")
+AGE_PUBLC_KEY = os.getenv("AGE_PUBLC_KEY")
 
-BACKUP_DIR = "/app/backups"
 
-os.makedirs(BACKUP_DIR, exist_ok=True)
+def get_formatted_datetime():
+    now = datetime.now()
+    year = now.year
+    month = now.strftime('%b')
+    day = now.day
+    hour = now.hour
+    minute = now.minute
+
+    formatted_output = f"{year}/{month}/{day}/{hour:02}/{minute:02}"
+    return formatted_output
+
 
 def get_all_databases():
     conn = psycopg2.connect(
@@ -37,8 +47,11 @@ def get_all_databases():
 
 
 def backup_database(db_name):
-    now = str(datetime.now()).replace(" ","_")
-    backup_file = os.path.join(f"{BACKUP_DIR}/{now}/", f"{db_name}_backup.sql")
+    now = get_formatted_datetime()
+    BACKUP_DIR = f"/app/backups/{now}"
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+    
+    backup_file = os.path.join(BACKUP_DIR, f"{db_name}_backup.sql")
 
     pg_dump_cmd = [
         "pg_dump",
@@ -60,6 +73,25 @@ def backup_database(db_name):
     subprocess.run(pg_dump_cmd, env=env, check=True)
     print(f"Backup successful for database {db_name}: {backup_file}")
     
+    return backup_file
+
+
+def encrypt_backup(backup_file):
+    encrypted_backup_file = f"{backup_file}.age"
+    subprocess.run(
+        [
+            "age",
+            "--recipient",
+            AGE_PUBLC_KEY,
+            "--output",
+            encrypted_backup_file,
+            backup_file,
+        ],
+        check=True,
+    )
+    logging.info(f"Backup file encrypted and saved at: {encrypted_backup_file}")
+    os.remove(backup_file)
+
 
 def backup_all_databases():
     databases = get_all_databases()
@@ -69,7 +101,8 @@ def backup_all_databases():
 
     for db in databases:
         print(f"Backing up database: {db}")
-        backup_database(db)
+        backup_file = backup_database(db)
+        # encrypt_backup(backup_file)
 
 
 def start_schedueled_backup():
