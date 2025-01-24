@@ -43,9 +43,17 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app
+    restart: "always"
+    environment:
+      - POSTGRES_USER=docpgsailer
+      - POSTGRES_PASSWORD=docpgsailer
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - BACKUP_SCHEDULE=*/2 * * * *
     volumes:
       - ./:/app
       - ./logs:/app/logs
+      - ./backups:/app/backups
     depends_on:
       db:
         condition: service_healthy
