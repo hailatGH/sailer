@@ -3,8 +3,41 @@ name: docpgsailer
 services:
   postgres_db:
     image: postgres:15
-    container_name: poostgres_db
+    container_name: postgres_db
     environment:
-      - POSTGRES_PASSWORD=securePassword
+      - POSTGRES_DB=docpgsailer
+      - POSTGRES_USER=docpgsailer
+      - POSTGRES_PASSWORD=docpgsailer
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docpgsailer -d docpgsailer"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  s3:
+    image: minio/minio:latest
+    command: server --console-address ":9001" /data
+    container_name: s3
+    environment:
+      - MINIO_ACCESS_KEY=docpgsailer
+      - MINIO_SECRET_KEY=docpgsailer
+      - MINIO_ROOT_USER=docpgsailer
+      - MINIO_ROOT_PASSWORD=docpgsailer
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - s3_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_db_data:
+  s3_data:
