@@ -1,0 +1,9 @@
+name: docpgsailer
+
+services:
+  postgres_db:
+    image: postgres:15
+    container_name: poostgres_db
+    environment:
+      - POSTGRES_PASSWORD=securePassword
+    
