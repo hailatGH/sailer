@@ -1,3 +1,6 @@
 __pycache__
-logs
-backups
+logs/
+backups/
+.env
+age/
+keys/
