@@ -1,1 +1,7 @@
-from pgsailer.backup import start_schedueled_backup
+import logging
+from pgsailer.backup import BackupScheduler
+
+def start_scheduled_backup():
+    logging.info("Starting scheduled backup...")
+    scheduler = BackupScheduler()
+    scheduler.start()

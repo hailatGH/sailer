@@ -43,7 +43,6 @@ services:
     env_file:
       - .env
     volumes:
-      - ./logs:/app/logs
       - ./backups:/app/backups
       - ./keys:/app/age
     depends_on:
