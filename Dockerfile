@@ -24,4 +24,4 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
-ENTRYPOINT ["poetry", "run", "python", "main.py"]
+ENTRYPOINT ["poetry", "run", "python", "sailer"]

@@ -1,20 +1,25 @@
-import argparse
 import logging
-from pgsailer import start_scheduled_backup
+import argparse
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from pgsailer.backup import BackupScheduler
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Entrypoint script for managing sailer.")
+    parser = argparse.ArgumentParser(
+        description="Entrypoint script for managing sailer."
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     subparsers.add_parser("pgsailer", help="Start the pgsailer service")
-    
+
     args = parser.parse_args()
     if args.command == "pgsailer":
         logging.info("Starting pgsailer service.")
-        start_scheduled_backup()
+        logging.info("Starting scheduled backup...")
+        scheduler = BackupScheduler()
+        scheduler.start()
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()
