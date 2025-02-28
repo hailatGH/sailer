@@ -8,7 +8,10 @@ from sailer.dto import ENV
 load_dotenv()
 env = dataconf.env("SAILER_", ENV)
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging at the top of the file.
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 logging.info("Starting sailer")
-logging.info(f"Environment: {env}")
