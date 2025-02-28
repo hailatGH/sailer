@@ -1,7 +1,8 @@
 import sys
+import logging
 import argparse
 
-from sailer.pg_sailer import pg_backup
+from sailer.pg_sailer import run_backup_cycle
 
 def main():
     parser = argparse.ArgumentParser()
@@ -9,11 +10,11 @@ def main():
     args = parser.parse_args()
     
     if args.pg_backup:
-        print("Executing postgres backup process")
-        pg_backup()
+        logging.info("Executing postgres backup process")
+        run_backup_cycle()
         sys.exit(0)
     else:
-        print("No arguments passed")
+        logging.info("No arguments passed")
         sys.exit(1)
 
 if __name__ == "__main__":
